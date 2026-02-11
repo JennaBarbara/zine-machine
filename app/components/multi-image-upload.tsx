@@ -32,7 +32,7 @@ export default function MultiImageUpload({ setPreviews, setError}: MultiImageUpl
         <div>
        
         {/* Implement your multi-image upload functionality here */}
-           <input className="file:bg-radial-[at_25%_25%] file:from-stone-100 file:to-stone-100 file:via-stone-200 file:hover:bg-stone-100 file:p-4 file:cursor-pointer  z-50 outline-2 outline-stone-500 rounded-md bg-radial-[at_25%_25%] bg-slate-100  disabled:opacity-50" 
+           <input className="file:bg-radial-[at_25%_25%] file:from-stone-100 file:to-stone-200 file:via-stone-300 hover:file:bg-stone-100 file:p-4 file:cursor-pointer  z-50 outline-2 outline-stone-500 rounded-md bg-radial-[at_25%_25%] bg-slate-100  disabled:opacity-50" 
             id="multiple_files" 
             type="file" multiple 
             onChange={(e) => selectImagesHandler(e.target.files)} 

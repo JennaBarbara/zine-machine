@@ -18,7 +18,7 @@ export default function Button({children, className, onClick, disabled, href, ac
 
     return (
       <button 
-          className={`cursor-pointer z-50 outline-2 outline-stone-500 rounded-md bg-radial-[at_25%_25%] from-white via-stone-200 to-stone-100 hover:via-stone-100 hover:to-white disabled:opacity-50 ${padding} ${className}`}
+          className={`cursor-pointer z-50 outline-2 outline-stone-500 rounded-md bg-radial-[at_25%_25%] from-white via-stone-300 to-stone-100 hover:via-stone-100 hover:to-white disabled:opacity-50 ${padding} ${className}`}
           onClick={href ? () => redirect(href, RedirectType.push) : onClick}
           disabled={disabled}
        >

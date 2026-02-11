@@ -127,9 +127,9 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
                 This is a tool to help you create a zine on letter-sized paper! Upload 8 images in the order you want them to appear in the zine, and then click &quot;Generate PDF&quot; to download a PDF of your zine. The first image will be the front cover, the next 6 images will be the inside pages, and the last image will be the back cover.
             </p>
             <p>
-                Use the diagram below as a guide to folding your printed zine. The panels are arranged in a specific order so that when you fold the paper in half and then in thirds, the pages will be in the correct order. The first image you upload will be the front cover, and the last image will be the back cover. The middle 6 images will be the inside pages, arranged in a way that they will be in the correct order when f
+              Use the diagram below as a guide for folding your printed zine. 
             </p>
-            <NextImage src="/zine-diagram.png" alt="diagram of how the pages will be arranged in the PDF" width={400} height={400} className="w-full h-auto object-contain"/>
+            <NextImage src="/zine-machine/zine-diagram.png" alt="diagram of how the pages will be arranged in the PDF" width={400} height={400} className="w-full h-auto object-contain"/>
         </div>
         </Card>
      </div>
