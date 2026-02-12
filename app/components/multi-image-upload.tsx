@@ -1,5 +1,6 @@
 
-import { useCallback} from "react"
+import { useCallback, useRef} from "react"
+import Button from "./button"
 
 interface MultiImageUploadProps {
 setPreviews: (urls: {url: string, id: number}[]) => void
@@ -7,14 +8,21 @@ setPreviews: (urls: {url: string, id: number}[]) => void
 }
 
 export default function MultiImageUpload({ setPreviews, setError}: MultiImageUploadProps) {
-   const getBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
-  });
-};
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+ 
+
+  const getBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleClick = useCallback(() => {
+   hiddenFileInput.current?.click()
+  },[hiddenFileInput])
 
   const selectImagesHandler = useCallback(async (images: FileList | null) => {
     setError(null)
@@ -28,12 +36,13 @@ export default function MultiImageUpload({ setPreviews, setError}: MultiImageUpl
 
   }, [setPreviews, setError])
 
+  
+
     return (
         <div>
-       
-        {/* Implement your multi-image upload functionality here */}
-           <input className="file:bg-radial-[at_25%_25%] file:from-stone-100 file:to-stone-200 file:via-stone-300 hover:file:bg-stone-100 file:p-4 file:cursor-pointer  z-50 outline-2 outline-stone-500 rounded-md bg-radial-[at_25%_25%] bg-slate-100  disabled:opacity-50" 
-            id="multiple_files" 
+          <Button size="md" onClick={handleClick}>Upload Images</Button>
+           <input className="hidden" 
+            ref={hiddenFileInput}
             type="file" multiple 
             onChange={(e) => selectImagesHandler(e.target.files)} 
             accept=".png,.jpg,.jpeg"/>
