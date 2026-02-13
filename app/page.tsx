@@ -104,7 +104,7 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
          <MultiImageUpload setPreviews={setPreviews} setError={setError}/>
             <div className="flex flex-wrap gap-4 p-4 border-2 border-slate-300 rounded-md min-h-32">
                 {previews.length > 0 && <SortableImageArea previews={previews} setPreviews={setPreviews} />}
-            {previews.length === 0 && <p className="text-gray-500">Your uploaded images will appear here to preview of the page order.</p>}
+            {previews.length === 0 && <p className="text-gray-500">Your uploaded images will appear here to preview the page order.</p>}
             </div>
             <div className="flex flex-row-reverse items-center gap-2 mt-4">
 
