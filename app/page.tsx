@@ -6,10 +6,12 @@ import Card from "@/app/components/card"
 import Button from "@/app/components/button"
 import { useCallback, useState } from "react"
 import MultiImageUpload from "@/app/components/multi-image-upload"
+import ToggleButtonGroup from "./components/toggle-button-group"
 import SubHeading from "@/app/components/sub-heading"
 import { jsPDF } from "jspdf";
 import NextImage from "next/image"
 import SortableImageArea from "@/app/components/sortable-image"
+
 
 
 const imageCoordinates = [
@@ -23,14 +25,24 @@ const imageCoordinates = [
     { x: 2, y: 4, rotation: 90, adjustment: -1 }, //back
 ]
 
+const pageFormats = [
+    {value: 'letter', label: 'Letter'},
+    {value: 'legal', label: 'Legal'},
+    {value: 'tabloid', label: 'Tabloid'},
+    {value: 'a4', label: 'A4'},
+    {value: 'a5', label: 'A5'}
+
+]
+
 export default function ZineMachine() {
 
-const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
- const [error, setError] = useState<string | null>(null)
- const [loading, setLoading] = useState(false)
+    const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [pageFormat, setPageFormat] = useState(pageFormats[0].value)
 
-  const generatePdfHandler = useCallback(async () => {
-     
+
+    const generatePdfHandler = useCallback(async () => {
      setError(null)
      if (previews.length !== 8) {
          setError("You must upload exactly 8 images.");
@@ -58,7 +70,7 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
     }
     
     
-    const doc = new jsPDF({unit: 'px',format: 'letter' });
+    const doc = new jsPDF({unit: 'px',format: pageFormat});
     const panelHeight = doc.internal.pageSize.getWidth()/2;
     const panelWidth = doc.internal.pageSize.getHeight()/4;
 
@@ -86,7 +98,7 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
     setLoading(false)
 
    
-}, [previews,setError, setLoading])
+}, [previews, setError, setLoading, pageFormat])
 
 
 
@@ -101,10 +113,15 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
         <Card>
       
         <SubHeading text="Create Your Zine" />
+        
          <MultiImageUpload setPreviews={setPreviews} setError={setError}/>
-            <div className="flex flex-wrap gap-4 p-4 border-2 border-slate-300 rounded-md min-h-32">
+            <div className="flex flex-wrap gap-4 p-4 mb-2 border-2 border-slate-300 rounded-md min-h-32">
                 {previews.length > 0 && <SortableImageArea previews={previews} setPreviews={setPreviews} />}
             {previews.length === 0 && <p className="text-gray-500">Your uploaded images will appear here to preview the page order.</p>}
+            </div>
+            <div className="flex flex-col gap-2">
+            <span>Page size</span>
+            <ToggleButtonGroup options={pageFormats} value={pageFormat} onChange={(value) => setPageFormat(value)} />
             </div>
             <div className="flex flex-row-reverse items-center gap-2 mt-4">
 
@@ -123,7 +140,7 @@ const [previews, setPreviews] = useState<{url: string, id: number}[]>([])
             <SubHeading text="About" />
             <div className="flex flex-col gap-4">  
             <p>
-                This is a tool to help you create a zine on letter-sized paper! Upload 8 images in the order you want them to appear in the zine, and then click &quot;Generate PDF&quot; to download a PDF of your zine. The first image will be the front cover, the next 6 images will be the inside pages, and the last image will be the back cover.
+                This is a tool to help you create a paper zine! Upload 8 images in the order you want them to appear in the zine, and then click &quot;Generate PDF&quot; to download a PDF of your zine. The first image will be the front cover, the next 6 images will be the inside pages, and the last image will be the back cover.
             </p>
             <p>
               Use the diagram below as a guide for folding your printed zine. 
