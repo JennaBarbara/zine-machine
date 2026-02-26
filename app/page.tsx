@@ -7,6 +7,7 @@ import Button from "@/app/components/button"
 import { useCallback, useState } from "react"
 import MultiImageUpload from "@/app/components/multi-image-upload"
 import ToggleButtonGroup from "./components/toggle-button-group"
+import NumberInput from "@/app/components/number-input"
 import SubHeading from "@/app/components/sub-heading"
 import { jsPDF } from "jspdf";
 import NextImage from "next/image"
@@ -40,6 +41,11 @@ export default function ZineMachine() {
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [pageFormat, setPageFormat] = useState(pageFormats[0].value)
+    const [topandBottomMargin, setTopandBottomMargin] = useState(0)
+    const [sideMargin, setSideMargin] = useState(0)
+
+
+
 
 
     const generatePdfHandler = useCallback(async () => {
@@ -62,6 +68,7 @@ export default function ZineMachine() {
         const img = await loadImage(src);
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d")!;
+        
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
@@ -70,17 +77,19 @@ export default function ZineMachine() {
     }
     
     
-    const doc = new jsPDF({unit: 'px',format: pageFormat});
+    const doc = new jsPDF({unit: 'mm',format: pageFormat});
+
     const panelHeight = doc.internal.pageSize.getWidth()/2;
     const panelWidth = doc.internal.pageSize.getHeight()/4;
 
     for (let i = 0; i < previews.length; i++) {
         const canvas = await normalizeImage(previews[i].url);
         const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        
 
         const scale = Math.min(
-                panelWidth / canvas.width, 
-                panelHeight / canvas.height
+                (panelWidth - sideMargin*2) / canvas.width, 
+                (panelHeight - topandBottomMargin*2) / canvas.height
                 );
         doc.addImage(imgData, 
              "JPEG",
@@ -98,7 +107,7 @@ export default function ZineMachine() {
     setLoading(false)
 
    
-}, [previews, setError, setLoading, pageFormat])
+}, [previews, setError, setLoading, pageFormat, topandBottomMargin, sideMargin])
 
 
 
@@ -119,10 +128,17 @@ export default function ZineMachine() {
                 {previews.length > 0 && <SortableImageArea previews={previews} setPreviews={setPreviews} />}
             {previews.length === 0 && <p className="text-gray-500">Your uploaded images will appear here to preview the page order.</p>}
             </div>
-            <div className="flex flex-col gap-2">
-            <span>Page size</span>
+            <div className="flex flex-col gap-1">
+            <span className="font-bold">Paper Size</span>
             <ToggleButtonGroup options={pageFormats} value={pageFormat} onChange={(value) => setPageFormat(value)} />
             </div>
+                <div className="flex flex-col gap-1">
+                    <span className="font-bold">Margins Around Each Image</span>
+                    <div className="flex flex-row gap-4">
+                    <NumberInput label="Top and Bottom Margin (mm)" value={topandBottomMargin} onChange={setTopandBottomMargin} min={0} max={50} />
+                    <NumberInput label="Side Margin (mm)" value={sideMargin} onChange={setSideMargin} min={0} max={50} />
+                    </div>
+                </div>
             <div className="flex flex-row-reverse items-center gap-2 mt-4">
 
                 <Button size="md" onClick={()=>generatePdfHandler()} disabled={loading}>
