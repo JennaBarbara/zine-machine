@@ -4,7 +4,7 @@
 import Heading from "@/app/components/heading"
 import Card from "@/app/components/card"
 import Button from "@/app/components/button"
-import { useCallback, useState } from "react"
+import { useCallback, useState, useMemo } from "react"
 import MultiImageUpload from "@/app/components/multi-image-upload"
 import ToggleButtonGroup from "./components/toggle-button-group"
 import NumberInput from "@/app/components/number-input"
@@ -27,12 +27,11 @@ const imageCoordinates = [
 ]
 
 const pageFormats = [
-    {value: 'letter', label: 'Letter'},
-    {value: 'legal', label: 'Legal'},
-    {value: 'tabloid', label: 'Tabloid'},
-    {value: 'a4', label: 'A4'},
-    {value: 'a5', label: 'A5'}
-
+    {value: 'letter', label: 'Letter', maxTopAndBottomMargin: 54, maxSideMargin: 35},
+    {value: 'legal', label: 'Legal', maxTopAndBottomMargin: 54, maxSideMargin: 44.5},
+    {value: 'tabloid', label: 'Tabloid', maxTopAndBottomMargin: 69, maxSideMargin: 54},
+    {value: 'a4', label: 'A4', maxTopAndBottomMargin: 52.5, maxSideMargin: 37.1},
+    {value: 'a5', label: 'A5', maxTopAndBottomMargin: 37, maxSideMargin: 26.2}
 ]
 
 export default function ZineMachine() {
@@ -43,6 +42,14 @@ export default function ZineMachine() {
     const [pageFormat, setPageFormat] = useState(pageFormats[0].value)
     const [topandBottomMargin, setTopandBottomMargin] = useState(0)
     const [sideMargin, setSideMargin] = useState(0)
+
+    const maxTopAndBottomMargin = useMemo(() => {
+     return pageFormats.find(format => format.value === pageFormat)?.maxTopAndBottomMargin || 0;
+    }, [pageFormat]);
+
+    const maxSideMargin = useMemo(() => {
+        return pageFormats.find(format => format.value === pageFormat)?.maxSideMargin || 0;
+    }, [pageFormat])
 
 
 
@@ -132,13 +139,13 @@ export default function ZineMachine() {
             <span className="font-bold">Paper Size</span>
             <ToggleButtonGroup options={pageFormats} value={pageFormat} onChange={(value) => setPageFormat(value)} />
             </div>
-                <div className="flex flex-col gap-1">
-                    <span className="font-bold">Margins Around Each Image</span>
-                    <div className="flex flex-row gap-4">
-                    <NumberInput label="Top and Bottom Margin (mm)" value={topandBottomMargin} onChange={setTopandBottomMargin} min={0} max={50} />
-                    <NumberInput label="Side Margin (mm)" value={sideMargin} onChange={setSideMargin} min={0} max={50} />
-                    </div>
+            <div className="flex flex-col gap-1">
+                <span className="font-bold">Margins Around Each Image</span>
+                <div className="flex flex-row gap-4">
+                <NumberInput label="Top and Bottom Margin (mm)" value={topandBottomMargin} onChange={setTopandBottomMargin} max={maxTopAndBottomMargin} />
+                <NumberInput label="Side Margin (mm)" value={sideMargin} onChange={setSideMargin} min={0} max={maxSideMargin} />
                 </div>
+            </div>
             <div className="flex flex-row-reverse items-center gap-2 mt-4">
 
                 <Button size="md" onClick={()=>generatePdfHandler()} disabled={loading}>
